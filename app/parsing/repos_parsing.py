@@ -30,9 +30,6 @@ class RepositoryParse:
     def get_commits(self):
         return self.get_numbers_tool('span', 'd-none d-sm-inline')[1][:-2]
 
-    def get_data(self):
-        return self.get_numbers_tool('a', 'Link Link--muted')
-
     def get_stars(self):
         return self.get_numbers_tool('a', 'Link Link--muted')[1]
 
@@ -41,12 +38,3 @@ class RepositoryParse:
 
     def get_forks(self):
         return self.get_numbers_tool('a', 'Link Link--muted')[3][:-1]
-
-
-my_repo = RepositoryParse("AlexxIT", "go2rtc")
-print(my_repo.get_branches())
-print(my_repo.get_tags())
-print(my_repo.get_commits())
-print(my_repo.get_stars())
-print(my_repo.get_watching())
-print(my_repo.get_forks())

@@ -55,7 +55,7 @@ def get_repos_stat():
 @app.route("/repos/delete/all", methods=['DELETE'])
 def delete_all_repos():
     repositories_data.drop()
-    return ({"delete all repositories": "OK"}, 200)
+    return ({"delete_all_repositories": "OK"}, 200)
 
 @app.route("/repos/delete", methods=['DELETE'])
 def delete_repository():
@@ -64,6 +64,6 @@ def delete_repository():
         abort(400)
     search_for_repository = repositories_data.find_one({"account": request_data['account'], "repository": request_data['repository']})
     if not search_for_repository:
-        return ({"delete repository": "no such repository"}, 200)
+        return ({"delete_repository": "no_such_repository"}, 200)
     repositories_data.delete_many({"account": request_data['account'], "repository": request_data['repository']})
-    return ({"delete account": "OK"}, 200)
+    return ({"delete_repository": "OK"}, 200)

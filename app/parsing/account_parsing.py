@@ -1,5 +1,6 @@
-from bs4 import BeautifulSoup
 import requests
+from bs4 import BeautifulSoup
+
 
 class AccountParse:
 
@@ -41,11 +42,3 @@ class AccountParse:
             if symbol in digits:
                 contributions+=symbol
         return contributions
-
-
-Artemon = AccountParse("AlexxIT")
-print(Artemon.get_repos_number())
-print(Artemon.get_repos())
-print(Artemon.get_followers())
-print(Artemon.get_following())
-print(Artemon.get_contributions_last_year())
