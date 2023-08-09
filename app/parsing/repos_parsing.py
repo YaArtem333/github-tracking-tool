@@ -28,7 +28,7 @@ class RepositoryParse:
         return self.get_numbers_tool('a', 'ml-3 Link--primary no-underline')[1]
 
     def get_commits(self):
-        return self.get_numbers_tool('span', 'd-none d-sm-inline')[1][:-2]
+        return self.get_numbers_tool('span', 'd-none d-sm-inline')[0][:-2]
 
     def get_stars(self):
         return self.get_numbers_tool('a', 'Link Link--muted')[1]

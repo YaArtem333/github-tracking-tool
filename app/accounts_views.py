@@ -49,8 +49,12 @@ def get_account_stat():
     account = request.args.get('account')
     time_from = request.args.get('from')
     time_to = request.args.get('to')
+
     if not time_from or not time_to or not account:
         abort(400)
+    response = requests.get(f'http://github.com/{account}')
+    if response.status_code != 200:
+        abort(response.status_code)
     try:
         valid_time_from = time.strptime(time_from, "%d-%m-%Y %H:%M")
         valid_time_to = time.strptime(time_to, "%d-%m-%Y %H:%M")
@@ -89,6 +93,6 @@ def delete_account():
 
     search_for_account = accounts_data.find_one({"account": request_data['account']})
     if not search_for_account:
-        return ({"delete_account": "no_such_account"}, 200)
+        abort(404)
     accounts_data.delete_many({"account": request_data['account']})
     return ({"delete_account": "OK"}, 200)
