@@ -21,15 +21,18 @@ def add_new_account():
         abort(response.status_code)
 
     confirmed_account = AccountParse(account)
-    new_document = {
-        "account": account,
-        "repositories_number": confirmed_account.get_repos_number(),
-        "popular_repositories": confirmed_account.get_repos(),
-        "followers": confirmed_account.get_followers(),
-        "following": confirmed_account.get_following(),
-        "contributions_last_year": confirmed_account.get_contributions_last_year(),
-        "time": time_now
-    }
+    try:
+        new_document = {
+            "account": account,
+            "repositories_number": confirmed_account.get_repos_number(),
+            "popular_repositories": confirmed_account.get_repos(),
+            "followers": confirmed_account.get_followers(),
+            "following": confirmed_account.get_following(),
+            "contributions_last_year": confirmed_account.get_contributions_last_year(),
+            "time": time_now
+        }
+    except:
+        abort(404)
     accounts_data.insert_one(new_document)
     added_document = accounts_data.find_one({"time": time_now, "account": account})
     response = {
@@ -75,7 +78,7 @@ def get_account_stat():
         }
         counter += 1
     if counter == 0:
-        return ({"get_stat": "no_accounts_in_this_interval"}, 200)
+        return ({"get_stat": "no_changes_in_this_interval"}, 200)
     return (create_account_change_response(chosen_accounts[0], chosen_accounts[counter-1]), 200)
 
 

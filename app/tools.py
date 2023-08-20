@@ -28,6 +28,7 @@ def create_account_change_response(first_acc:dict, last_acc:dict):
 def create_repository_change_response(first_repo:dict, last_repo:dict):
     account = first_repo["account"]
     repository = first_repo["repository"]
+
     branches_change = str(int(last_repo["branches"]) - int(first_repo["branches"]))
     if int(last_repo["branches"]) - int(first_repo["branches"]) > 0:
         branches_change = "+" + str(int(last_repo["branches"]) - int(first_repo["branches"]))

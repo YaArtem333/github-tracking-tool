@@ -12,7 +12,7 @@ from .parsing.repos_parsing import RepositoryParse
 @app.route("/repos/add", methods=['POST'])
 def add_new_repository():
     request_data = request.get_json()
-    if len(request_data) != 2:
+    if len(request_data) != 2 or not 'account' in request_data or not 'repository' in request_data:
         abort(400)
     account = request_data["account"]
     repository = request_data["repository"]
@@ -84,7 +84,7 @@ def get_repos_stat():
         }
         counter += 1
     if counter == 0:
-        return ({"get_stat": "no_accounts_in_this_interval"}, 200)
+        return ({"get_stat": "no_changes_in_this_interval"}, 200)
     return (create_repository_change_response(chosen_repos[0], chosen_repos[counter-1]), 200)
 
 @app.route("/repos/delete/all", methods=['DELETE'])
