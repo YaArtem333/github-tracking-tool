@@ -12,7 +12,7 @@ from .parsing.account_parsing import AccountParse
 @app.route("/accounts/add", methods=['POST'])
 def add_new_account():
     request_data = request.get_json()
-    if len(request_data) != 1 or not 'account' in request_data:
+    if len(request_data) != 1 or not 'account' in request_data or request_data["account"] == "":
         abort(400)
     account = request_data["account"]
     time_now = datetime.datetime.now().strftime("%d-%m-%Y %H:%M")
