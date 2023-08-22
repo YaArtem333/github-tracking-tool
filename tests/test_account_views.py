@@ -1,17 +1,13 @@
-import datetime
 import os
 import sys
-import json
-import unittest
-import mongomock
-
-import pytest
 import requests
+import datetime
+import mongomock
+import pytest
 from unittest.mock import Mock, MagicMock, patch
 
 sys.path.append(os.path.abspath('../app'))
 from app.app import app
-from app.models import accounts_data
 from app.parsing.account_parsing import AccountParse
 
 
