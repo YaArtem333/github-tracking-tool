@@ -18,7 +18,7 @@ def add_new_account():
     time_now = datetime.datetime.now().strftime("%d-%m-%Y %H:%M")
     response = requests.get(f'http://github.com/{account}')
     if response.status_code != 200:
-        abort(response.status_code)
+        abort(404)
 
     confirmed_account = AccountParse(account)
     try:
