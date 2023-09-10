@@ -6,7 +6,7 @@ def handle_bad_request(e):
 
 @app.errorhandler(404)
 def handle_not_found(e):
-    return {"error": "page or resourse not found"}, 404
+    return {"error": "page or resource not found"}, 404
 
 @app.errorhandler(412)
 def handle_precondition_failed(e):

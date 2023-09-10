@@ -1,0 +1,552 @@
+openapi: 3.1.0
+info:
+  title: Github tracking tool
+  description: |-
+    API для отслеживания действий в репозиториях и аккаунтах на GitHub.
+    
+    <b>В системе присутствуют следующие компоненты:</b>
+    - accounts
+    - repos
+    
+    <b>В контроллерах доступен следующий функционал:</b>
+    
+    accounts:
+    - Добавление аккаунта
+    - Поиск изменений в аккаунте за заданный промежуток времени
+    - Удаление аккаунта
+    - Удаление всех аккаунтов
+    
+    repos:
+    - Добавление репозитория
+    - Поиск изменений в репозитории за заданный промежуток времени
+    - Удаление репозитория
+    - Удаление всех репозиториев
+    
+    <b>Сервис имеет базу данных MongoDB</b>
+    
+    <b>Сервис упакован в Docker контейнер</b>
+
+    <b>Сервис разворачивается на любой машине с помощью <i>make</i></b>
+
+  version: 1.0.0
+
+servers:
+  - url: https://localhost:5000
+tags:
+  - name: accounts
+    description: Operations with accounts
+  - name: repos
+    description: Operations with repositories
+paths:
+  /accounts/add:
+    post:
+      tags:
+        - accounts
+      summary: Add new account
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                account:
+                  type: string
+                  example: string
+        required: true
+      responses:
+        '201':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  account:
+                    type: string
+                    example: string
+                  contributions_last_year:
+                    type: string
+                    example: "10"
+                  followers:
+                    type: string
+                    example: 123
+                  following:
+                    type: string
+                    example: 321
+                  popular_repositories:
+                    type: array
+                    example: [
+                      "first-repo",
+                      "second-repo",
+                      "third-repo",
+                      "fourth-repo",
+                      "fifth-repo",
+                      "sixth-repo"
+                      ]
+                  repositories_number:
+                    type: string
+                    example: 6
+                  time:
+                    type: string
+                    example: 10-09-2023 00:00
+        '400':
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "bad request"
+        '404':
+          description: "GitHub account not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "page or resource not found"
+        '415':
+          description: "Unsupported Media Type"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "unsupported media type"
+        '500':
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "some problems with server"
+
+  /accounts/stats:
+    get:
+      tags:
+        - accounts
+      summary: "Get GitHub account statistics within a time range"
+      parameters:
+        - name: "account"
+          in: "query"
+          description: "GitHub account name"
+          required: true
+          schema:
+            type: string
+        - name: "from"
+          in: "query"
+          description: "Start time (format: dd-mm-yyyy hh:mm)"
+          required: true
+          schema:
+            type: string
+        - name: "to"
+          in: "query"
+          description: "End time (format: dd-mm-yyyy hh:mm)"
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: "Account statistics retrieved successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  account:
+                    type: string
+                    example: account
+                  contributions_last_tear:
+                    type: string
+                    example: 10
+                  followers:
+                    type: string
+                    example: 10 (-1)
+                  following:
+                    type: string
+                    example: 1 (0)
+                  repositories_number:
+                    type: string
+                    example: 9 (+2)
+        '400':
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "bad request"
+        '404':
+          description: "GitHub account not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "page or resource not found"
+        '415':
+          description: "Unsupported Media Type"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "unsupported media type"
+  /accounts/delete/all:
+    delete:
+      tags:
+        - accounts
+      summary: "Delete all GitHub accounts"
+      responses:
+        '200':
+          description: "All accounts deleted successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  delete_all_accounts:
+                    type: string
+                    example: "OK"
+  /accounts/delete:
+    delete:
+      tags:
+        - accounts
+      summary: "Delete a GitHub account by name"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                account:
+                  type: string
+                  example: account
+      responses:
+        '200':
+          description: "Account deleted successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  delete_account:
+                    type: string
+                    example: "OK"
+        '400':
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "bad request"
+        '404':
+          description: "GitHub account not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "page or resource not found"
+        '415':
+          description: "Unsupported Media Type"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "unsupported media type"
+        '500':
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "some problems with server"
+
+  /repos/add:
+    post:
+      tags:
+        - repos
+      summary: "Add a new GitHub repository"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                account:
+                  type: string
+                repository:
+                  type: string
+      responses:
+        '201':
+          description: "Repository added successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  account:
+                    type: string
+                  repository:
+                    type: string
+                    example: string
+                  branches:
+                    type: string
+                    example: "10"
+                  tags:
+                    type: string
+                    example: "10"
+                  commits:
+                    type: string
+                    example: "10"
+                  stars:
+                    type: string
+                    example: "10"
+                  watching:
+                    type: string
+                    example: "10"
+                  forks:
+                    type: string
+                    example: "10"
+                  time:
+                    type: string
+                    example: 10-09-2023 12:20
+        '400':
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "bad request"
+        '404':
+          description: "GitHub repository not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "page or resource not found"
+        '415':
+          description: "Unsupported Media Type"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "unsupported media type"
+        '500':
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "some problems with server"
+
+  /repos/stats:
+    get:
+      tags:
+        - repos
+      summary: "Get GitHub repository statistics within a time range"
+      parameters:
+        - name: "account"
+          in: "query"
+          description: "GitHub account name"
+          required: true
+          schema:
+            type: string
+        - name: "repository"
+          in: "query"
+          description: "GitHub repository name"
+          required: true
+          schema:
+            type: string
+        - name: "from"
+          in: "query"
+          description: "Start time (format: dd-mm-yyyy hh:mm)"
+          required: true
+          schema:
+            type: string
+        - name: "to"
+          in: "query"
+          description: "End time (format: dd-mm-yyyy hh:mm)"
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: "Repository statistics retrieved successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  account:
+                    type: string
+                    example: account
+                  contributions_last_tear:
+                    type: string
+                    example: 10
+                  followers:
+                    type: string
+                    example: 10 (-1)
+                  following:
+                    type: string
+                    example: 1 (0)
+                  repositories_number:
+                    type: string
+                    example: 9 (+2)
+        '400':
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "bad request"
+        '404':
+          description: "GitHub account or repository not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "page or resource not found"
+        '415':
+          description: "Unsupported Media Type"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "unsupported media type"
+  /repos/delete/all:
+    delete:
+      tags:
+        - repos
+      summary: "Delete all GitHub repositories"
+      responses:
+        '200':
+          description: "All repositories deleted successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  delete_all_repositories:
+                    type: string
+                    example: "OK"
+  /repos/delete:
+    delete:
+      tags:
+        - repos
+      summary: "Delete a GitHub repository by name"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                account:
+                  type: string
+                  example: account
+                repository:
+                  type: string
+                  example: repository
+      responses:
+        '200':
+          description: "Repository deleted successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  delete_account:
+                    type: string
+                    example: "OK"
+        '400':
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "bad request"
+        '404':
+          description: "GitHub account or repository not found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "page or resource not found"
+        '415':
+          description: "Unsupported Media Type"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "unsupported media type"
+        '500':
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "some problems with server"
+

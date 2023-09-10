@@ -1,6 +1,6 @@
 from pymongo import MongoClient
 
-client = MongoClient('mongodb', 27017)
+client = MongoClient('127.0.0.1', 27017)
 
 db = client.github_tracking_tool
 
